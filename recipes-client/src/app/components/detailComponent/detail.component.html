@@ -1,0 +1,12 @@
+<mat-icon mat-list-icon svgIcon="arrow_back" (click)="backClick()"></mat-icon>
+
+<div *ngIf="recipe">
+    <h1>{{recipe.name}}</h1>
+    
+    <p>{{category}}</p>
+    
+    <p>{{recipe.description}}</p>
+</div>
+<div *ngIf="!recipe">
+    loading...
+</div>

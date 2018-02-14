@@ -1,0 +1,30 @@
+<mat-form-field class="search-full-width">
+    <input 
+        type="text"
+        placeholder="Suche"
+        aria-label="Number"
+        matInput
+        [formControl]="myControl"
+        [matAutocomplete]="auto"
+        [(ngModel)]="searchText">
+    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+        <mat-option *ngFor="let option of filteredOptions | async" [value]="option" (onSelectionChange)="queryResultSected($event)">
+        {{ option }}
+        </mat-option>
+    </mat-autocomplete>
+</mat-form-field>
+
+<mat-list>
+    <div *ngFor="let part of data">
+        <h3 mat-subheader>{{part.category}}</h3>
+        <mat-list-item *ngFor="let recipe of part.recipes | filter : searchText" (click)="itemClick(recipe)">
+            <mat-icon mat-list-icon svgIcon="folder"></mat-icon>
+            <h4 mat-line>{{recipe.name}}</h4>
+            <p mat-line> {{recipe.updated | date}} </p>
+        </mat-list-item>
+    </div>
+</mat-list>
+
+<button mat-fab class="float">
+    <mat-icon svgIcon="add" (click)="create()"></mat-icon>
+</button>
