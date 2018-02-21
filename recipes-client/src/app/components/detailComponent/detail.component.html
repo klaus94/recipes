@@ -3,13 +3,17 @@
 <div *ngIf="recipe">
     <h1>{{recipe.name}}</h1>
     
+    <h3>Kategorie:</h3>
     <p>{{category}}</p>
     
+    <h3>Zutaten:</h3>
+    <mat-list role="list">
+        <mat-list-item *ngFor="let incr of recipe.incredients" role="listitem">{{incr}}</mat-list-item>
+    </mat-list>
+
+    <h3>Anleitung:</h3>
     <p>{{recipe.description}}</p>
 
-    <ul>
-        <li *ngFor="let incr of recipe.incredience">{{incr}}</li>
-    </ul>
 </div>
 <div *ngIf="!recipe">
     no recipe available :(

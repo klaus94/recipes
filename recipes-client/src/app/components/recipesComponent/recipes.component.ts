@@ -75,11 +75,14 @@ export class RecipesListComponent implements OnInit
     {
         const recipeName = event.source.value;
         this.data.forEach(part => {
-            const clickedRecipe = part.recipes.find(recipe => recipe.name === recipeName);
-            if (clickedRecipe)
+            if (part.recipes)
             {
-                this.itemClick(clickedRecipe);
-                return;
+                const clickedRecipe = part.recipes.find(recipe => recipe.name === recipeName);
+                if (clickedRecipe)
+                {
+                    this.itemClick(clickedRecipe);
+                    return;
+                }
             }
         });
         console.log("item not found");
