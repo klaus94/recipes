@@ -1,4 +1,4 @@
-import { ECategory } from "./ECategory";
+import { ECategory } from './ECategory';
 
 export class Recipe
 {
@@ -6,4 +6,5 @@ export class Recipe
     name: string;
     category: ECategory;
     description: string;
+    incredients: string[];
 }

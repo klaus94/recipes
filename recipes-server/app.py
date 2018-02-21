@@ -15,11 +15,11 @@ db = DB()
 
 
 @app.route('/recepes/list', methods=['GET'])
-def get_tasks():
+def get_recipes():
 	return jsonify([r.serialize() for r in db.getRecipes()])
 
 @app.route('/recepes/<int:recipe_id>', methods=['GET'])
-def get_task(recipe_id):
+def get_recipe(recipe_id):
 	recipe = [recipe for recipe in db.getRecipes() if recipe.id == recipe_id]
 	if len(recipe) == 0:
 		abort(404)
@@ -33,16 +33,17 @@ def get_task(recipe_id):
 # 	return jsonify({'task': task[0]})
 
 @app.route('/recepes/new', methods=['POST'])
-def create_task():
+def create_recipe():
 	json = request.get_json()
 	print json
 	id = 0
 	if 'id' in json:
 		id = json['id']
 	try:
-		recipe = Recepe(id, json['name'], json['category'], json['description'])
+		recipe = Recepe(id, json['name'], json['category'], json['description'], json['incredients'])
 		db.addRecipe(recipe)
 	except Exception as e:
+		print e
 		return make_response(jsonify({'error': 'recepe has wrong format or some properties are missing'}), 400)
 	
 	return jsonify('success'), 201
@@ -79,4 +80,4 @@ def not_found(error):
 
 
 if __name__ == '__main__':
-	app.run(debug=True)
+	app.run(host='0.0.0.0', debug=False)

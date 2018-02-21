@@ -6,7 +6,11 @@
     <p>{{category}}</p>
     
     <p>{{recipe.description}}</p>
+
+    <ul>
+        <li *ngFor="let incr of recipe.incredience">{{incr}}</li>
+    </ul>
 </div>
 <div *ngIf="!recipe">
-    loading...
+    no recipe available :(
 </div>

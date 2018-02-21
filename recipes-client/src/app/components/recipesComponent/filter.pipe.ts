@@ -20,6 +20,7 @@ export class FilterPipe implements PipeTransform
         {
             return it.name.toLowerCase().includes(searchText) ||
                 it.description.toLocaleLowerCase().includes(searchText);
+                // could also include incredients into search...
         });
     }
 }

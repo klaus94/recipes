@@ -7,7 +7,8 @@ import { Observable } from 'rxjs/Observable';
 @Injectable()
 export class RestService
 {
-    endpoint = 'http://localhost:5000/';
+    // endpoint = 'http://localhost:5000/';
+    endpoint = 'http://192.168.178.25:5000/';
 
     constructor( private http: HttpClient)
     { }
@@ -24,6 +25,7 @@ export class RestService
 
     createRecepe(recepe: Recipe)
     {
+        console.log(JSON.stringify(recepe));
         return this.postRequest<Recipe>('recepes/new', JSON.stringify(recepe));
     }
 
@@ -35,7 +37,6 @@ export class RestService
             headers.append('Content-Type', 'application/json; charset=utf-8');       // not working -> bug in angular
         }
 
-        // run get request
         return this.http.get<T>(this.endpoint.concat(path), { 'headers': headers, 'params': params});
     }
 
@@ -43,9 +44,7 @@ export class RestService
     {
         if (headers === null)
         {
-            console.log(headers);
             headers = new HttpHeaders().set('Content-Type', 'application/json; charset=utf-8');
-            console.log(headers);
         }
 
         return this.http.post<T>(this.endpoint.concat(path), body, { 'headers': headers, 'params': params});

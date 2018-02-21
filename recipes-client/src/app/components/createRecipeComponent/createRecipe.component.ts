@@ -23,6 +23,9 @@ export class CreateRecipeComponent
     selectable = true;
     removable = true;
     addOnBlur = true;
+    // Enter, comma
+    separatorKeysCodes = [ENTER, COMMA];
+    incredients = [];
 
     constructor(
         public dialogRef: MatDialogRef<CreateRecipeComponent>,
@@ -38,37 +41,29 @@ export class CreateRecipeComponent
         }
     }
 
+    add(event: MatChipInputEvent): void
+    {
+        const input = event.input;
+        const value = event.value;
 
-    // Enter, comma
-    separatorKeysCodes = [ENTER, COMMA];
+        // Add our incredient
+        if ((value || '').trim()) {
+            this.incredients.push(value.trim());
+        }
 
-    fruits = [
-      { name: 'Lemon' },
-      { name: 'Lime' },
-      { name: 'Apple' },
-    ];
-
-    add(event: MatChipInputEvent): void {
-      let input = event.input;
-      let value = event.value;
-
-      // Add our fruit
-      if ((value || '').trim()) {
-        this.fruits.push({ name: value.trim() });
-      }
-
-      // Reset the input value
-      if (input) {
-        input.value = '';
-      }
+        // Reset the input value
+        if (input) {
+            input.value = '';
+        }
     }
 
-    remove(fruit: any): void {
-      let index = this.fruits.indexOf(fruit);
+    remove(incredient: any): void
+    {
+        const index = this.incredients.indexOf(incredient);
 
-      if (index >= 0) {
-        this.fruits.splice(index, 1);
-      }
+        if (index >= 0) {
+            this.incredients.splice(index, 1);
+        }
     }
 
     createRecepe()
@@ -77,7 +72,9 @@ export class CreateRecipeComponent
         newRecepe.category = ECategory[this.selectedCategory];
         newRecepe.description = this.description;
         newRecepe.name = this.name;
-        if (!newRecepe.category || !newRecepe.description || !newRecepe.name)
+        newRecepe.incredients = this.incredients;
+
+        if (newRecepe.category === undefined || newRecepe.description === undefined || !newRecepe.name)
         {
             this.openSnackbar('important entry is missing...');
             return;

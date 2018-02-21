@@ -13,7 +13,8 @@ class DB(object):
 			id INTEGER PRIMARY KEY,
 			name VARCHAR(20),
 			category INTEGER,
-			description VARCHAR(1000));"""
+			description VARCHAR(1000),
+			incredients TEXT);"""
 		self.cursor.execute(sqlCommand)
 		self.connection.commit()
 		self.closeConnection()
@@ -31,11 +32,16 @@ class DB(object):
 	def addRecipe(self, recipe):
 		self.openConnection()
 
-		formatString = """INSERT INTO recepe (name, category, description) 
-			VALUES ("{name}", {category}, "{description}");"""
+		# delete all "," from incredients and make a string out of all incredients
+		incredientsList = list(map(lambda incr: incr.replace(",", ""), recipe.incredients))
+		incredientsString = ",".join(incredientsList)
+
+		formatString = """INSERT INTO recepe (name, category, description, incredients) 
+			VALUES ("{name}", {category}, "{description}", "{incredients}");"""
 		sqlCommand = formatString.format(name = recipe.name, \
 			category = recipe.category, \
-			description = recipe.description)
+			description = recipe.description, \
+			incredients = incredientsString)
 		self.cursor.execute(sqlCommand)
 		self.connection.commit()
 
@@ -47,7 +53,9 @@ class DB(object):
 		recepeList = self.cursor.fetchall()
 		result = []
 		for ele in recepeList:
-			result.append(Recepe(ele[0], ele[1], ele[2], ele[3]))
+			incredString = ele[4]
+			incredList = incredString.split(",")
+			result.append(Recepe(ele[0], ele[1], ele[2], ele[3], incredList))
 		self.closeConnection()
 		return result
 

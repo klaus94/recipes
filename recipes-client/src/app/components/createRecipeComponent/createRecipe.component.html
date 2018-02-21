@@ -13,9 +13,9 @@
         </mat-form-field>
         <mat-form-field class="full-width">
             <mat-chip-list #chipList>
-                <mat-chip *ngFor="let fruit of fruits" [selectable]="selectable"
-                         [removable]="removable" (remove)="remove(fruit)">
-                  {{fruit.name}}
+                <mat-chip *ngFor="let incredient of incredients" [selectable]="selectable"
+                         [removable]="removable" (remove)="remove(incredient)">
+                  {{incredient}}
                   <mat-icon matChipRemove *ngIf="removable" svgIcon="close"></mat-icon>
                 </mat-chip>
                 <input placeholder="Zutaten:"
