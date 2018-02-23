@@ -23,6 +23,8 @@ import { MatInputModule,
  import { routing } from './app.routing';
  import { DetailComponent } from './components/detailComponent/detail.component';
 
+ import { ImageUploadModule } from 'angular2-image-upload';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -47,6 +49,7 @@ import { MatInputModule,
     MatAutocompleteModule,
     MatSnackBarModule,
     MatChipsModule,
+    ImageUploadModule.forRoot()
   ],
   entryComponents: [
     CreateRecipeComponent

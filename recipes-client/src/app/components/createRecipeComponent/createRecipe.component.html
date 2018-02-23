@@ -12,8 +12,11 @@
             </mat-select>
         </mat-form-field>
 
-        <input type="file" id="avatar" (change)="onFileChange($event)" #fileInput>
-        
+        <!-- <input type="file" id="avatar" (change)="onFileChange($event)" #fileInput> -->
+        <!-- <button type="button" md-button (click)="imgFileInput.click()">Add a photo</button>
+        <input hidden type="file" #imgFileInput (change)="previewImage($event)"/> -->
+        <image-upload [url]="uploadURL" [style]="customStyle" max="2"></image-upload>
+
         <mat-form-field class="full-width">
             <mat-chip-list #chipList>
                 <mat-chip *ngFor="let incredient of incredients" [selectable]="selectable"

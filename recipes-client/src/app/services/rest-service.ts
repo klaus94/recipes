@@ -2,14 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Recipe } from '../model/Recipe';
 import { Observable } from 'rxjs/Observable';
+import { backendURL } from '../utils/const';
 
 
 @Injectable()
 export class RestService
 {
-    // endpoint = 'http://localhost:5000/';
-    endpoint = 'http://192.168.178.25:5000/';
-
     constructor( private http: HttpClient)
     { }
 
@@ -37,7 +35,7 @@ export class RestService
             headers.append('Content-Type', 'application/json; charset=utf-8');       // not working -> bug in angular
         }
 
-        return this.http.get<T>(this.endpoint.concat(path), { 'headers': headers, 'params': params});
+        return this.http.get<T>(backendURL.concat(path), { 'headers': headers, 'params': params});
     }
 
     private postRequest<T>(path: string, body: string, headers: HttpHeaders = null, params: HttpParams = null)
@@ -47,6 +45,6 @@ export class RestService
             headers = new HttpHeaders().set('Content-Type', 'application/json; charset=utf-8');
         }
 
-        return this.http.post<T>(this.endpoint.concat(path), body, { 'headers': headers, 'params': params});
+        return this.http.post<T>(backendURL.concat(path), body, { 'headers': headers, 'params': params});
     }
 }

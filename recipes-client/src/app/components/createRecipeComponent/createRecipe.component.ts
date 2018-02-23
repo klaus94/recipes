@@ -5,6 +5,7 @@ import { RestService } from '../../services/rest-service';
 import { Recipe } from '../../model/Recipe';
 import {MatChipInputEvent} from '@angular/material';
 import {ENTER, COMMA} from '@angular/cdk/keycodes';
+import { backendURL } from '../../utils/const';
 
 @Component({
     selector: 'create-dialog',
@@ -17,6 +18,8 @@ export class CreateRecipeComponent
     description = '';
     categories: string[] = [];
     selectedCategory = '';
+    createID = Math.floor(Math.random() * 100000);  // unique id for this creation
+    uploadURL = backendURL + 'images/new/' + this.createID.toString();
 
     // chips control
     visible = true;

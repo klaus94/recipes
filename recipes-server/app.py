@@ -54,6 +54,11 @@ def create_recipe():
 	
 	return jsonify('success'), 201
 
+@app.route('/images/new/<int:recepe_id>', methods=['POST'])
+def add_image(recepe_id):
+	print "got recepe_id: " + str(recepe_id)
+	return jsonify('success'), 201
+
 @app.route('/todo/api/v1.0/tasks/<int:task_id>', methods=['PUT'])
 def update_task(task_id):
 	task = [task for task in tasks if task['id'] == task_id]
