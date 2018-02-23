@@ -37,10 +37,16 @@ def create_recipe():
 	json = request.get_json()
 	print json
 	id = 0
+	image = ""
+	description = ""
 	if 'id' in json:
 		id = json['id']
+	if 'image' in json:
+		image = json['image']
+	if 'description' in json:
+		description = json['description']
 	try:
-		recipe = Recepe(id, json['name'], json['category'], json['description'], json['incredients'])
+		recipe = Recepe(id, json['name'], json['category'], description, json['incredients'], image)
 		db.addRecipe(recipe)
 	except Exception as e:
 		print e

@@ -14,7 +14,8 @@ class DB(object):
 			name VARCHAR(20),
 			category INTEGER,
 			description VARCHAR(1000),
-			incredients TEXT);"""
+			incredients TEXT,
+			image BLOB);"""
 		self.cursor.execute(sqlCommand)
 		self.connection.commit()
 		self.closeConnection()
@@ -36,12 +37,13 @@ class DB(object):
 		incredientsList = list(map(lambda incr: incr.replace(",", ""), recipe.incredients))
 		incredientsString = ",".join(incredientsList)
 
-		formatString = """INSERT INTO recepe (name, category, description, incredients) 
-			VALUES ("{name}", {category}, "{description}", "{incredients}");"""
+		formatString = """INSERT INTO recepe (name, category, description, incredients, image) 
+			VALUES ("{name}", {category}, "{description}", "{incredients}", {image});"""
 		sqlCommand = formatString.format(name = recipe.name, \
 			category = recipe.category, \
 			description = recipe.description, \
-			incredients = incredientsString)
+			incredients = incredientsString, \
+			image = recipe.image)
 		self.cursor.execute(sqlCommand)
 		self.connection.commit()
 
@@ -55,7 +57,7 @@ class DB(object):
 		for ele in recepeList:
 			incredString = ele[4]
 			incredList = incredString.split(",")
-			result.append(Recepe(ele[0], ele[1], ele[2], ele[3], incredList))
+			result.append(Recepe(ele[0], ele[1], ele[2], ele[3], incredList, ele[5]))
 		self.closeConnection()
 		return result
 

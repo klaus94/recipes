@@ -11,6 +11,9 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
+
+        <input type="file" id="avatar" (change)="onFileChange($event)" #fileInput>
+        
         <mat-form-field class="full-width">
             <mat-chip-list #chipList>
                 <mat-chip *ngFor="let incredient of incredients" [selectable]="selectable"
