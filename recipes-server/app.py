@@ -11,19 +11,19 @@ db = DB()
 
 # add test recepe
 # newRec = Recepe(1, 'Buy groceries', 1, 'Milk, Cheese, Pizza, Fruit, Tylenol')
-# db.addRecipe(newRec)
+# db.addrecepe(newRec)
 
 
 @app.route('/recepes/list', methods=['GET'])
-def get_recipes():
-	return jsonify([r.serialize() for r in db.getRecipes()])
+def get_recepes():
+	return jsonify([r.serialize() for r in db.getRecepes()])
 
-@app.route('/recepes/<int:recipe_id>', methods=['GET'])
-def get_recipe(recipe_id):
-	recipe = [recipe for recipe in db.getRecipes() if recipe.id == recipe_id]
-	if len(recipe) == 0:
+@app.route('/recepes/<int:recepe_id>', methods=['GET'])
+def get_recepe(recepe_id):
+	recepe = db.getRecepe(recepe_id)
+	if recepe == None:
 		abort(404)
-	return jsonify(recipe[0].serialize())
+	return jsonify(recepe.serialize())
 
 # @app.route('/todo/api/v1.0/tasks/<int:task_id>', methods=['GET'])
 # def get_task(task_id):
@@ -33,31 +33,41 @@ def get_recipe(recipe_id):
 # 	return jsonify({'task': task[0]})
 
 @app.route('/recepes/new', methods=['POST'])
-def create_recipe():
+def create_recepe():
 	json = request.get_json()
-	print json
 	id = 0
-	image = ""
 	description = ""
 	if 'id' in json:
 		id = json['id']
-	if 'image' in json:
-		image = json['image']
 	if 'description' in json:
 		description = json['description']
 	try:
-		recipe = Recepe(id, json['name'], json['category'], description, json['incredients'], image)
-		db.addRecipe(recipe)
+		recepe = Recepe(id, json['name'], json['category'], description, json['incredients'])
+		id = db.addRecepe(recepe)
 	except Exception as e:
 		print e
 		return make_response(jsonify({'error': 'recepe has wrong format or some properties are missing'}), 400)
 	
-	return jsonify('success'), 201
+	return jsonify(id), 201
+
+@app.route('/recepes/<int:recepe_id>/images', methods=['GET'])
+def get_images_for_recepe(recepe_id):
+	return jsonify(db.get_images_for_recepe(recepe_id)), 200
 
 @app.route('/images/new/<int:recepe_id>', methods=['POST'])
 def add_image(recepe_id):
 	print "got recepe_id: " + str(recepe_id)
+	image = request
+	db.addImage(recepe_id, str(image.data))
 	return jsonify('success'), 201
+
+@app.route('/images/<int:image_id>', methods=['GET'])
+def get_image(image_id):
+	return db.get_image(image_id)
+
+
+
+
 
 @app.route('/todo/api/v1.0/tasks/<int:task_id>', methods=['PUT'])
 def update_task(task_id):
@@ -91,4 +101,4 @@ def not_found(error):
 
 
 if __name__ == '__main__':
-	app.run(host='0.0.0.0', debug=False)
+	app.run(host='0.0.0.0', debug=True)

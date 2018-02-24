@@ -6,22 +6,31 @@ from Recepe import Recepe
 
 class DB(object):
 	def __init__(self):
-		#... connect to database
 		self.openConnection()
 
+		# create recepe-database
 		sqlCommand = """CREATE TABLE IF NOT EXISTS recepe (
 			id INTEGER PRIMARY KEY,
 			name VARCHAR(20),
 			category INTEGER,
 			description VARCHAR(1000),
-			incredients TEXT,
+			incredients TEXT);"""
+		self.cursor.execute(sqlCommand)
+		self.connection.commit()
+
+		# create image-database
+		sqlCommand = """CREATE TABLE IF NOT EXISTS images (
+			id INTEGER PRIMARY KEY,
+			thumbnail,
+			recepe_id INTEGER,
 			image BLOB);"""
 		self.cursor.execute(sqlCommand)
 		self.connection.commit()
+
 		self.closeConnection()
 
 	def openConnection(self):
-		self.connection = sqlite3.connect("recipes.db")
+		self.connection = sqlite3.connect("recepes.db")
 		self.cursor = self.connection.cursor()
 
 	# for debugging	
@@ -30,26 +39,59 @@ class DB(object):
 		self.cursor.execute(sqlCommand)
 		self.connection.commit()
 
-	def addRecipe(self, recipe):
+	def addRecepe(self, recepe):
 		self.openConnection()
 
 		# delete all "," from incredients and make a string out of all incredients
-		incredientsList = list(map(lambda incr: incr.replace(",", ""), recipe.incredients))
+		incredientsList = list(map(lambda incr: incr.replace(",", ""), recepe.incredients))
 		incredientsString = ",".join(incredientsList)
 
-		formatString = """INSERT INTO recepe (name, category, description, incredients, image) 
-			VALUES ("{name}", {category}, "{description}", "{incredients}", {image});"""
-		sqlCommand = formatString.format(name = recipe.name, \
-			category = recipe.category, \
-			description = recipe.description, \
-			incredients = incredientsString, \
-			image = recipe.image)
-		self.cursor.execute(sqlCommand)
+		sqlCommand = """INSERT INTO recepe (name, category, description, incredients) 
+			VALUES (?, ?, ?, ?);"""
+		self.cursor.execute(sqlCommand, ( \
+			recepe.name, \
+			recepe.category, \
+			recepe.description, \
+			incredientsString )
+		)
+		self.connection.commit()
+		rowID = self.cursor.lastrowid
+		self.closeConnection()
+
+		return rowID
+
+	def addImage(self, recepe_id, image):
+		self.openConnection()
+		sqlCommand = """INSERT INTO images (recepe_id, image) VALUES (?, ?);"""
+		self.cursor.execute(sqlCommand, (recepe_id, image))
 		self.connection.commit()
 
 		self.closeConnection()
 
-	def getRecipes(self):
+	def get_image(self, image_id):
+		self.openConnection()
+		self.cursor.execute("SELECT image FROM images i WHERE i.id = ?", (image_id, ))
+		image = self.cursor.fetchone()
+
+		if (len(image) != 1):
+			return None
+		self.closeConnection()
+
+		return image[0]
+
+	def get_images_for_recepe(self, recepe_id):
+		self.openConnection()
+		self.cursor.execute(
+			"""SELECT i.id FROM images i
+				INNER JOIN recepe r 
+				WHERE r.id = ? AND r.id = i.recepe_id""", (recepe_id, ))
+		imageIDs = self.cursor.fetchall()
+		self.closeConnection()
+
+		return [i[0] for i in imageIDs]
+
+
+	def getRecepes(self):
 		self.openConnection()
 		self.cursor.execute("SELECT * FROM recepe")
 		recepeList = self.cursor.fetchall()
@@ -57,9 +99,26 @@ class DB(object):
 		for ele in recepeList:
 			incredString = ele[4]
 			incredList = incredString.split(",")
-			result.append(Recepe(ele[0], ele[1], ele[2], ele[3], incredList, ele[5]))
+			result.append(Recepe(ele[0], ele[1], ele[2], ele[3], incredList))
 		self.closeConnection()
 		return result
+
+	def getRecepe(self, recepe_id):
+		self.openConnection()
+		print type(recepe_id)
+		self.cursor.execute("SELECT * FROM recepe r WHERE r.id = ?", (recepe_id, ))
+		results = self.cursor.fetchall()
+		
+		if (len(results) != 1):
+			return None
+
+		r = results[0]
+
+		result = Recepe(r[0], r[1], r[2], r[3], r[4])
+		self.closeConnection()
+
+		return result
+
 
 	# def storePoint(self, name, points):
 	# 	# look up, if entry is in database

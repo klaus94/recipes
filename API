@@ -1,0 +1,10 @@
+API:
+
+/recepes
+	/list			GET		... gibt Liste aller Rezepte in JSON-Array zurück
+	/[id]			GET		... gibt Rezept mit der ID [id] als JSON-Objekt zurück
+	/new			POST	... speichert neues Rezept (muss im Body als JSON übergeben werden)
+	/[id]/images	GET		... gibt Liste der Image-ids zu einem Rezept zurück
+/images
+	/new/[rec_id]	POST	... speichert neues Bild zu Rezept mit der ID [rec_id]
+	/[img_id]		GET		... gibt Bild mit Image-id [img_id] zurück
