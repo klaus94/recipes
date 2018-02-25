@@ -114,7 +114,10 @@ class DB(object):
 
 		r = results[0]
 
-		result = Recepe(r[0], r[1], r[2], r[3], r[4])
+		incredString = ele[4]
+		incredList = incredString.split(",")
+			
+		result = Recepe(r[0], r[1], r[2], r[3], incredList)
 		self.closeConnection()
 
 		return result
