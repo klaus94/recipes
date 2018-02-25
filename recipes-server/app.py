@@ -1,8 +1,9 @@
 #!flask/bin/python
-from flask import Flask, jsonify, abort, make_response, request
+from flask import Flask, jsonify, abort, make_response, request, send_file
 from flask_cors import CORS
 from db import DB
 from Recepe import Recepe
+from random import randrange
 
 app = Flask(__name__)
 CORS(app)
@@ -25,12 +26,6 @@ def get_recepe(recepe_id):
 		abort(404)
 	return jsonify(recepe.serialize())
 
-# @app.route('/todo/api/v1.0/tasks/<int:task_id>', methods=['GET'])
-# def get_task(task_id):
-# 	task = [task for task in tasks if task['id'] == task_id]
-# 	if len(task) == 0:
-# 		abort(404)
-# 	return jsonify({'task': task[0]})
 
 @app.route('/recepes/new', methods=['POST'])
 def create_recepe():
@@ -56,15 +51,24 @@ def get_images_for_recepe(recepe_id):
 
 @app.route('/images/new/<int:recepe_id>', methods=['POST'])
 def add_image(recepe_id):
-	print "got recepe_id: " + str(recepe_id)
-	image = request
-	db.addImage(recepe_id, str(image.data))
+	print dir(request.files['image'])
+	imgName = "img_" + str(randrange(0, 100000000)) + ".jpg"
+	filePath = "images/" + imgName
+	request.files['image'].save(filePath)
+
+	db.addImage(recepe_id, imgName)
 	return jsonify('success'), 201
+
+# @app.route('/images/<int:image_id>', methods=['GET'])
+# def get_image(image_id):
+# 	return db.get_image(image_id)
 
 @app.route('/images/<int:image_id>', methods=['GET'])
 def get_image(image_id):
-	return db.get_image(image_id)
+	fileName = db.get_image_file_name(image_id)
+	path = "images/" + fileName
 
+	return send_file(path, mimetype='image/jpeg')
 
 
 

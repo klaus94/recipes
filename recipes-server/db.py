@@ -21,9 +21,9 @@ class DB(object):
 		# create image-database
 		sqlCommand = """CREATE TABLE IF NOT EXISTS images (
 			id INTEGER PRIMARY KEY,
-			thumbnail,
 			recepe_id INTEGER,
-			image BLOB);"""
+			image_file_name TEXT,
+			thumbnail_file_path TEXT);"""
 		self.cursor.execute(sqlCommand)
 		self.connection.commit()
 
@@ -60,24 +60,25 @@ class DB(object):
 
 		return rowID
 
-	def addImage(self, recepe_id, image):
+	def addImage(self, recepe_id, imgName):
 		self.openConnection()
-		sqlCommand = """INSERT INTO images (recepe_id, image) VALUES (?, ?);"""
-		self.cursor.execute(sqlCommand, (recepe_id, image))
+
+		sqlCommand = """INSERT INTO images (recepe_id, image_file_name) VALUES (?, ?);"""
+		self.cursor.execute(sqlCommand, (recepe_id, imgName))
 		self.connection.commit()
 
 		self.closeConnection()
 
-	def get_image(self, image_id):
+	def get_image_file_name(self, image_id):
 		self.openConnection()
-		self.cursor.execute("SELECT image FROM images i WHERE i.id = ?", (image_id, ))
-		image = self.cursor.fetchone()
+		self.cursor.execute("SELECT image_file_name FROM images i WHERE i.id = ?", (image_id, ))
+		imagePaths = self.cursor.fetchone()
 
-		if (len(image) != 1):
+		if (len(imagePaths) != 1):
 			return None
 		self.closeConnection()
 
-		return image[0]
+		return imagePaths[0]
 
 	def get_images_for_recepe(self, recepe_id):
 		self.openConnection()

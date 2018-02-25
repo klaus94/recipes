@@ -19,7 +19,7 @@ export class CreateRecipeComponent
     categories: string[] = [];
     selectedCategory = '';
     createID = Math.floor(Math.random() * 100000);  // unique id for this creation
-    uploadURL = backendURL + 'images/new/' + this.createID.toString();
+    uploadURL = backendURL + 'images/new/' + '1'; //this.createID.toString();
 
     // chips control
     visible = true;
