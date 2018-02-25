@@ -114,9 +114,9 @@ class DB(object):
 
 		r = results[0]
 
-		incredString = ele[4]
+		incredString = r[4]
 		incredList = incredString.split(",")
-			
+
 		result = Recepe(r[0], r[1], r[2], r[3], incredList)
 		self.closeConnection()
 
