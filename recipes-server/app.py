@@ -24,6 +24,7 @@ def get_recepe(recepe_id):
 	recepe = db.getRecepe(recepe_id)
 	if recepe == None:
 		abort(404)
+
 	return jsonify(recepe.serialize())
 
 
@@ -32,22 +33,19 @@ def create_recepe():
 	json = request.get_json()
 	id = 0
 	description = ""
+	images = []
 	if 'id' in json:
 		id = json['id']
 	if 'description' in json:
 		description = json['description']
 	try:
-		recepe = Recepe(id, json['name'], json['category'], description, json['incredients'])
+		recepe = Recepe(id, json['name'], json['category'], description, json['incredients'], [])
 		id = db.addRecepe(recepe)
 	except Exception as e:
 		print e
 		return make_response(jsonify({'error': 'recepe has wrong format or some properties are missing'}), 400)
 	
 	return jsonify(id), 201
-
-@app.route('/recepes/<int:recepe_id>/images', methods=['GET'])
-def get_images_for_recepe(recepe_id):
-	return jsonify(db.get_images_for_recepe(recepe_id)), 200
 
 @app.route('/images/new/<int:recepe_id>', methods=['POST'])
 def add_image(recepe_id):
@@ -69,9 +67,6 @@ def get_image(image_id):
 	path = "images/" + fileName
 
 	return send_file(path, mimetype='image/jpeg')
-
-
-
 
 @app.route('/todo/api/v1.0/tasks/<int:task_id>', methods=['PUT'])
 def update_task(task_id):

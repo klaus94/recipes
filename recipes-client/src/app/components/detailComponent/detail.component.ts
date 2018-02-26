@@ -28,7 +28,7 @@ export class DetailComponent implements OnInit
         {
             this.category = ECategory[result.category];
             this.recipe = result;
-            console.log(this.recipe);
+            console.log(this.recipe.images);
         });
     }
 
