@@ -69,6 +69,12 @@ export class CreateRecipeComponent
         }
     }
 
+    imageSelected(file: File)
+    {
+        console.log("createRecepe-Component got: ");
+        console.log(file);
+    }
+
     createRecepe()
     {
         const newRecepe = new Recipe();

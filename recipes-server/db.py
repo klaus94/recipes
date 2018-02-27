@@ -35,6 +35,9 @@ class DB(object):
 		self.cursor.execute(sqlCommand)
 		self.connection.commit()
 
+
+	# add recepe to database (images are not included)
+	# images need to be added to database separately with "addImage()"
 	def addRecepe(self, recepe):
 		self.openConnection()
 
@@ -56,6 +59,8 @@ class DB(object):
 
 		return rowID
 
+	# adds image to database
+	# images are connected to recepes via a n-1 - relation
 	def addImage(self, recepe_id, imgName):
 		self.openConnection()
 
@@ -66,6 +71,7 @@ class DB(object):
 
 		self.closeConnection()
 
+	# returns file-path of image with id: image_id, that lead to local file
 	def get_image_file_name(self, image_id):
 		self.openConnection()
 		self.cursor.execute("SELECT image_file_name FROM images i WHERE i.id = ?", (image_id, ))
@@ -78,7 +84,7 @@ class DB(object):
 		return imagePaths[0]
 
 
-	# todo: delete this, when other methods are ready
+	# returns list of image-ids, that belong to given recepe
 	def get_images_for_recepe(self, recepe_id):
 		self.openConnection()
 		self.cursor.execute(
@@ -91,6 +97,7 @@ class DB(object):
 		return [i[0] for i in imageIDs]
 
 
+	# returns list of all recepes
 	def getRecepes(self):
 		result = []
 
@@ -106,6 +113,8 @@ class DB(object):
 		self.closeConnection()
 		return result
 
+
+	# returns recepe with given recepe-id
 	def getRecepe(self, recepe_id):
 		self.openConnection()
 		self.cursor.execute("SELECT * FROM recepe r WHERE r.id = ?", (recepe_id, ))

@@ -22,6 +22,7 @@ import { MatInputModule,
  import { FilterPipe } from './components/recipesComponent/filter.pipe';
  import { routing } from './app.routing';
  import { DetailComponent } from './components/detailComponent/detail.component';
+ import { ImageUploadComponent } from './components/imageUploadComponent/imageUpload.component';
 
  import { ImageUploadModule } from 'angular2-image-upload';
 
@@ -30,6 +31,7 @@ import { MatInputModule,
     AppComponent,
     RecipesListComponent,
     CreateRecipeComponent,
+    ImageUploadComponent,
     DetailComponent,
     FilterPipe,
   ],
