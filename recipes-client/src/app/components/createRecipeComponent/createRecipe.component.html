@@ -16,7 +16,7 @@
         <!-- <button type="button" md-button (click)="imgFileInput.click()">Add a photo</button>
         <input hidden type="file" #imgFileInput (change)="previewImage($event)"/> -->
         
-        <app-image-upload (imageChanged)="imageSelected($image)"></app-image-upload>
+        <app-image-upload (imageChanged)="imageSelected($event)"></app-image-upload>
         <!-- <image-upload [url]="uploadURL" [style]="customStyle" max="2"></image-upload> -->
 
         <mat-form-field class="full-width">

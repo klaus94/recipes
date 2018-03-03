@@ -18,8 +18,7 @@ export class CreateRecipeComponent
     description = '';
     categories: string[] = [];
     selectedCategory = '';
-    createID = Math.floor(Math.random() * 100000);  // unique id for this creation
-    uploadURL = backendURL + 'images/new/' + '1'; //this.createID.toString();
+    image: File;
 
     // chips control
     visible = true;
@@ -69,10 +68,9 @@ export class CreateRecipeComponent
         }
     }
 
-    imageSelected(file: File)
+    imageSelected(event: File)
     {
-        console.log("createRecepe-Component got: ");
-        console.log(file);
+        this.image = event;
     }
 
     createRecepe()
@@ -90,8 +88,15 @@ export class CreateRecipeComponent
         }
 
         this.restService.createRecepe(newRecepe).subscribe(
-              actionResult => console.log(actionResult),
-              error => console.log(error));
+            newRecepeID =>
+            {
+                this.restService.getRecepe(4);
+                if (this.image)
+                {
+                    this.restService.addImage(newRecepeID, this.image).subscribe(t => console.log(t));
+                }
+            },
+            error => console.log(error));
 
         this.openSnackbar('success');
 
