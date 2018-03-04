@@ -2,6 +2,8 @@
 
 <div *ngIf="recipe">
     <h1>{{recipe.name}}</h1>
+
+    <img *ngFor="let image of imageSources" [src]="image" />
     
     <h3>Kategorie:</h3>
     <p>{{category}}</p>
