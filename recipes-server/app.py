@@ -4,6 +4,7 @@ from flask_cors import CORS
 from db import DB
 from Recepe import Recepe
 from random import randrange
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -47,8 +48,9 @@ def create_recepe():
 
 @app.route('/images/new/<int:recepe_id>', methods=['POST'])
 def add_image(recepe_id):
-	print dir(request.files['image'])
-	imgName = "img_" + str(randrange(0, 100000000)) + ".jpg"
+	origFileName = request.files['image'].filename
+	ending = origFileName.split('.')[-1]
+	imgName = "img_" + str(randrange(0, 100000000)) + "." + ending 
 	filePath = "images/" + imgName
 	request.files['image'].save(filePath)
 
@@ -97,4 +99,6 @@ def not_found(error):
 
 
 if __name__ == '__main__':
+	if not os.path.exists("images"):
+		os.makedirs("images")
 	app.run(host='0.0.0.0', debug=True)
