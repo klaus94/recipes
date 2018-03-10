@@ -1,22 +1,35 @@
-<mat-icon mat-list-icon svgIcon="arrow_back" (click)="backClick()"></mat-icon>
+<div *ngIf="recipe; else error_content" class="container">
+    <header>
+        <h1>{{recipe.name}}</h1>
+    </header>
+    <nav>
+        <mat-icon mat-list-icon svgIcon="arrow_back" (click)="backClick()"></mat-icon>
+    </nav>
+    <main>
+        <img *ngFor="let image of imageSources" [src]="image" />
 
-<div *ngIf="recipe">
-    <h1>{{recipe.name}}</h1>
+        <br />
+        
+        <h3 class="mat-h3">Kategorie: {{category}}</h3>
+        
+        <hr />
 
-    <img *ngFor="let image of imageSources" [src]="image" />
-    
-    <h3>Kategorie:</h3>
-    <p>{{category}}</p>
-    
-    <h3>Zutaten:</h3>
-    <mat-list role="list">
-        <mat-list-item *ngFor="let incr of recipe.incredients" role="listitem">{{incr}}</mat-list-item>
-    </mat-list>
+        <h3 class="mat-h3">Zutaten:</h3>
+        <mat-chip-list>
+            <mat-chip *ngFor="let incr of recipe.incredients">{{incr}}</mat-chip>
+        </mat-chip-list>
 
-    <h3>Anleitung:</h3>
-    <p>{{recipe.description}}</p>
+        <br />
+        <hr />
 
+        <h3 class="mat-h3">Anleitung:</h3>
+        <p>{{recipe.description}}</p>    
+    </main>
+    <aside>Related links</aside>
+    <footer>Footer</footer>
 </div>
-<div *ngIf="!recipe">
-    no recipe available :(
-</div>
+
+<ng-template #error_content>
+    <mat-icon mat-list-icon svgIcon="arrow_back" (click)="backClick()"></mat-icon>
+    <p>Es ist ein Fehler aufgetreten :(</p>
+</ng-template>
