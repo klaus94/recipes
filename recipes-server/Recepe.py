@@ -2,12 +2,13 @@
 # -*- coding : utf -8 -*-
 
 class Recepe(object):
-	def __init__(self, id, name, category, description, incredients):
+	def __init__(self, id, name, category, description, incredients, images):
 		self.id = id
 		self.name = name
 		self.category = category
 		self.description = description
 		self.incredients = incredients
+		self.images = images
 
 	def serialize(self):
 		return {
@@ -15,5 +16,6 @@ class Recepe(object):
 			'name': self.name,
 			'category': self.category,
 			'description': self.description,
-			'incredients': self.incredients
+			'incredients': self.incredients,
+			'images': self.images
 		}

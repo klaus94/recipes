@@ -3,12 +3,13 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Recipe } from '../model/Recipe';
 import { Observable } from 'rxjs/Observable';
 import { backendURL } from '../utils/const';
+import { RequestOptions, RequestOptionsArgs, Http } from '@angular/http';
 
 
 @Injectable()
 export class RestService
 {
-    constructor( private http: HttpClient)
+    constructor( private http: HttpClient, private imgHTTP: Http)
     { }
 
     getRecepes(): Observable<Recipe[]>
@@ -21,10 +22,20 @@ export class RestService
         return this.getRequest<Recipe>('recepes/' + id);
     }
 
-    createRecepe(recepe: Recipe)
+    createRecepe(recepe: Recipe): any
     {
         console.log(JSON.stringify(recepe));
         return this.postRequest<Recipe>('recepes/new', JSON.stringify(recepe));
+    }
+
+    addImage(recepeID: number, image: File)
+    {
+        const url = backendURL.concat('images/new/' + recepeID.toString());
+        const options: RequestOptionsArgs = new RequestOptions();
+        const formData = new FormData();
+        formData.append('image', image);
+        return this.imgHTTP.post(url, formData, options);
+
     }
 
     private getRequest<T>(path: string, headers: HttpHeaders = null, params: HttpParams = null)

@@ -7,5 +7,5 @@ export class Recipe
     category: ECategory;
     description: string;
     incredients: string[];
-    imageURL?: string;
+    images: string[];
 }

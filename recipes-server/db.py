@@ -13,7 +13,7 @@ class DB(object):
 			id INTEGER PRIMARY KEY,
 			name VARCHAR(20),
 			category INTEGER,
-			description VARCHAR(1000),
+			description TEXT,
 			incredients TEXT);"""
 		self.cursor.execute(sqlCommand)
 		self.connection.commit()
@@ -21,17 +21,13 @@ class DB(object):
 		# create image-database
 		sqlCommand = """CREATE TABLE IF NOT EXISTS images (
 			id INTEGER PRIMARY KEY,
-			thumbnail,
 			recepe_id INTEGER,
-			image BLOB);"""
+			image_file_name TEXT,
+			thumbnail_file_path TEXT);"""
 		self.cursor.execute(sqlCommand)
 		self.connection.commit()
 
 		self.closeConnection()
-
-	def openConnection(self):
-		self.connection = sqlite3.connect("recepes.db")
-		self.cursor = self.connection.cursor()
 
 	# for debugging	
 	def clearDataBase(self):
@@ -39,6 +35,9 @@ class DB(object):
 		self.cursor.execute(sqlCommand)
 		self.connection.commit()
 
+
+	# add recepe to database (images are not included)
+	# images need to be added to database separately with "addImage()"
 	def addRecepe(self, recepe):
 		self.openConnection()
 
@@ -52,7 +51,7 @@ class DB(object):
 			recepe.name, \
 			recepe.category, \
 			recepe.description, \
-			incredientsString )
+			incredientsString)
 		)
 		self.connection.commit()
 		rowID = self.cursor.lastrowid
@@ -60,64 +59,74 @@ class DB(object):
 
 		return rowID
 
-	def addImage(self, recepe_id, image):
+	# adds image to database
+	# images are connected to recepes via a n-1 - relation
+	def addImage(self, recepe_id, imgName):
 		self.openConnection()
-		sqlCommand = """INSERT INTO images (recepe_id, image) VALUES (?, ?);"""
-		self.cursor.execute(sqlCommand, (recepe_id, image))
+
+		# insert image into image-table
+		sqlCommand = """INSERT INTO images (recepe_id, image_file_name) VALUES (?, ?);"""
+		self.cursor.execute(sqlCommand, (recepe_id, imgName))
 		self.connection.commit()
 
 		self.closeConnection()
 
-	def get_image(self, image_id):
+	# returns file-path of image with id: image_id, that lead to local file
+	def get_image_file_name(self, image_id):
 		self.openConnection()
-		self.cursor.execute("SELECT image FROM images i WHERE i.id = ?", (image_id, ))
-		image = self.cursor.fetchone()
+		self.cursor.execute("SELECT image_file_name FROM images i WHERE i.id = ?", (image_id, ))
+		imagePaths = self.cursor.fetchone()
 
-		if (len(image) != 1):
+		if (len(imagePaths) != 1):
 			return None
 		self.closeConnection()
 
-		return image[0]
+		return imagePaths[0]
 
+
+	# returns list of image-ids, that belong to given recepe
 	def get_images_for_recepe(self, recepe_id):
 		self.openConnection()
 		self.cursor.execute(
 			"""SELECT i.id FROM images i
-				INNER JOIN recepe r 
-				WHERE r.id = ? AND r.id = i.recepe_id""", (recepe_id, ))
+				INNER JOIN recepe r ON r.id = i.recepe_id
+				WHERE r.id = ?""", (recepe_id, ))
 		imageIDs = self.cursor.fetchall()
 		self.closeConnection()
 
 		return [i[0] for i in imageIDs]
 
 
+	# returns list of all recepes
 	def getRecepes(self):
-		self.openConnection()
-		self.cursor.execute("SELECT * FROM recepe")
-		recepeList = self.cursor.fetchall()
 		result = []
+
+		self.openConnection()
+		self.cursor.execute("SELECT * FROM recepe r")
+		recepeList = self.cursor.fetchall()
 		for ele in recepeList:
-			incredString = ele[4]
-			incredList = incredString.split(",")
-			result.append(Recepe(ele[0], ele[1], ele[2], ele[3], incredList))
+			incredList = []
+			imageList = self.get_images_for_recepe(ele[0])
+			if len(ele[4]) > 0:
+				incredList = ele[4].split(",")
+			result.append(Recepe(ele[0], ele[1], ele[2], ele[3], incredList, imageList))
 		self.closeConnection()
 		return result
 
+
+	# returns recepe with given recepe-id
 	def getRecepe(self, recepe_id):
 		self.openConnection()
-		print type(recepe_id)
 		self.cursor.execute("SELECT * FROM recepe r WHERE r.id = ?", (recepe_id, ))
 		results = self.cursor.fetchall()
-		
 		if (len(results) != 1):
 			return None
-
 		r = results[0]
-
-		incredString = r[4]
-		incredList = incredString.split(",")
-
-		result = Recepe(r[0], r[1], r[2], r[3], incredList)
+		incredList = []
+		imageList = self.get_images_for_recepe(r[0])
+		if len(r[4]) > 0:
+			incredList = r[4].split(",")
+		result = Recepe(r[0], r[1], r[2], r[3], incredList, imageList)
 		self.closeConnection()
 
 		return result
@@ -180,6 +189,10 @@ class DB(object):
 	# 	for entry in pointList[::-1]:									#reverse list --> hightst point at the top
 	# 		result.append(entry)
 	# 	return result
+
+	def openConnection(self):
+		self.connection = sqlite3.connect("recepes.db")
+		self.cursor = self.connection.cursor()
 
 	def closeConnection(self):
 		self.connection.close()
