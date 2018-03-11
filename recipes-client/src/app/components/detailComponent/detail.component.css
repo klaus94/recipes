@@ -40,7 +40,7 @@ aside {
 
 footer {
     grid-column: span 3;
-    padding: 30px;
+    /* padding: 30px; */
     text-align: center;
     font-size: 1.4em;
     background-color: #690;
@@ -50,7 +50,7 @@ footer {
 img {
     display: block;
     width: 100%;
-    max-width: 300px;
+    max-width: 60%;
     margin-left: auto;
     margin-right: auto;
 }

@@ -1,1 +1,8 @@
 ...
+
+start python server in local network
+> python app.py
+evt in app.py: app.run(host='0.0.0.0', debug=false)
+
+start angular in local network
+> ng serve --host 0.0.0.0
