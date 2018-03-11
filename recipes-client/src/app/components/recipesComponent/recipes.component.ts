@@ -123,7 +123,6 @@ export class RecipesListComponent implements OnInit
                         this.options = this.options.concat(part.recipes.map(recipe => recipe.name));
                     }
                 });
-                console.log(this.options);
             }
         );
 

@@ -34,7 +34,6 @@ export class DetailComponent implements OnInit
             this.recipe = result;
 
             this.imageSources = this.recipe.images.map(imgId => imgUrl.concat(imgId));
-            console.log(this.recipe.images);
         });
     }
 
