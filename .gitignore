@@ -1,2 +1,3 @@
 *.pyc
 images
+recipes-client/src/app/utils/const.ts
